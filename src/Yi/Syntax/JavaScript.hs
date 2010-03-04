@@ -7,6 +7,7 @@ import Data.DeriveTH
 import Data.Data (Data, Typeable)
 import qualified Data.Foldable
 import Data.Monoid (Endo(..), mempty)
+import Data.Foldable
 import Prelude (maybe)
 import Yi.Buffer.Basic (Point(..))
 import Yi.IncrementalParse (P, eof, symbol, recoverWith)

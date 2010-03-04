@@ -10,8 +10,9 @@ import Yi.Style (hintStyle, errorStyle, StyleName)
 import Yi.Syntax.Layout
 import Yi.Syntax.Tree
 import Yi.Syntax
-import Yi.Prelude 
+import Yi.Prelude
 import Prelude ()
+import Data.Foldable
 import Data.Monoid
 import Data.DeriveTH
 import Data.Derive.Foldable
@@ -34,7 +35,7 @@ isBrace (Tok b _ _) = (Special '{') == b
 
 ignoredToken :: TT -> Bool
 ignoredToken (Tok t _ _) = isComment t || t == CppDirective
-    
+
 isNoise :: Token -> Bool
 isNoise (Special c) = c `elem` ";,`"
 isNoise _ = True
@@ -60,7 +61,7 @@ instance IsTree Tree where
 -- | Search the given list, and return the 1st tree after the given
 -- point on the given line.  This is the tree that will be moved if
 -- something is inserted at the point.  Precondition: point is in the
--- given line.  
+-- given line.
 
 -- TODO: this should be optimized by just giving the point of the end
 -- of the line
@@ -71,7 +72,7 @@ getIndentingSubtree root offset line =
                    -- here (takeWhile), so that the tree is evaluated
                    -- lazily and therefore parsing it can be lazy.
                    posnOfs posn > offset, posnLine posn == line]
-    where allSubTreesPosn = [(t',posn) | t'@(Block _) <-filter (not . null . toList) (getAllSubTrees root), 
+    where allSubTreesPosn = [(t',posn) | t'@(Block _) <-filter (not . null . toList) (getAllSubTrees root),
                              let (tok:_) = toList t',
                              let posn = tokPosn tok]
 
@@ -83,18 +84,18 @@ getSubtreeSpan tree = (posnOfs $ first, lastLine - firstLine)
           [firstLine, lastLine] = fmap posnLine bounds
           assertJust (Just x) = x
           assertJust _ = error "assertJust: Just expected"
-    
+
 
 -- $(derive makeFunctor ''Tree)
 
 -- dropWhile' f = foldMap (\x -> if f x then mempty else Endo (x :))
--- 
+--
 -- isBefore l (Atom t) = isBefore' l t
 -- isBefore l (Error t) = isBefore l t
 -- isBefore l (Paren l g r) = isBefore l r
 -- isBefore l (Block s) = False
--- 
--- isBefore' l (Tok {tokPosn = Posn {posnLn = l'}}) = 
+--
+-- isBefore' l (Tok {tokPosn = Posn {posnLn = l'}}) =
 
 
 parse :: P TT (Tree TT)
@@ -102,7 +103,7 @@ parse = Expr <$> parse' tokT tokFromT
 
 parse' :: (TT -> Token) -> (Token -> TT) -> P TT [Tree TT]
 parse' toTok fromT = pExpr <* eof
-    where 
+    where
       -- | parse a special symbol
       sym c = symbol (isSpecial [c] . toTok)
 
@@ -128,8 +129,8 @@ parse' toTok fromT = pExpr <* eof
       -- we don't try to recover errors with them.
 
 getStrokes :: Point -> Point -> Point -> Tree TT -> [Stroke]
-getStrokes point _begin _end t0 = -- trace (show t0) 
-                                  result 
+getStrokes point _begin _end t0 = -- trace (show t0)
+                                  result
     where getStrokes' (Atom t) = one (ts t)
           getStrokes' (Error t) = one (modStroke errorStyle (ts t)) -- paint in red
           getStrokes' (Block s) = getStrokesL s
@@ -147,7 +148,7 @@ getStrokes point _begin _end t0 = -- trace (show t0)
           ts = tokenToStroke
           result = appEndo (getStrokes' t0) []
           one x = Endo (x :)
-          
+
 
 tokenToStroke :: TT -> Stroke
 tokenToStroke = fmap tokenToStyle . tokToSpan
@@ -160,7 +161,7 @@ tokenToAnnot = sequenceA . tokToSpan . fmap tokenToText
 
 
 -- | Create a special error token. (e.g. fill in where there is no correct token to parse)
--- Note that the position of the token has to be correct for correct computation of 
+-- Note that the position of the token has to be correct for correct computation of
 -- node spans.
 errTok = mkTok <$> curPos
    where curPos = tB <$> lookNext

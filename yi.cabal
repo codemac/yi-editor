@@ -48,7 +48,7 @@ flag ghcAPI
   Description: Enable linking with GHC API for advanced features.
   Default: False
   -- Can be useful to disable; ghc package is difficult to rebuild;
-  --  * normally not available for profiling.      
+  --  * normally not available for profiling.
   --  * links against old/new version of bytestring
   --  * links against old version of Cabal
   -- ...
@@ -102,7 +102,7 @@ library
         Yi.Debug
         Yi.Dired
         Yi.Dynamic
-        Yi.Editor 
+        Yi.Editor
         Yi.Eval
         Yi.Event
         Yi.File
@@ -129,7 +129,7 @@ library
         Yi.Lexer.Cplusplus
         Yi.Lexer.Haskell
         Yi.Lexer.JavaScript
-        Yi.Lexer.Latex 
+        Yi.Lexer.Latex
         Yi.Lexer.LiterateHaskell
         Yi.Lexer.GNUMake
         Yi.Lexer.OCaml
@@ -189,7 +189,7 @@ library
     if flag (vty) && !os(windows)
        cpp-options: -DFRONTEND_VTY
        exposed-modules: Yi.UI.Vty
-       
+
     if flag (pango)
       cpp-options: -DFRONTEND_PANGO
       exposed-modules: Yi.UI.Pango
@@ -231,7 +231,7 @@ library
 
     other-modules:
         Paths_yi,
-        
+
         -- "Internal" modules that the user better not see.
         Yi.Buffer.Implementation
         Data.Prototype
@@ -242,7 +242,7 @@ library
         Data.Trie
         Parser.Incremental
         Shim.CabalInfo
-        Shim.Utils 
+        Shim.Utils
         Shim.ProjectContent
         System.FriendlyPath
 
@@ -281,7 +281,7 @@ executable parserTest
                 Yi.Lexer.Haskell
                 Yi.Lexer.JavaScript
                 Yi.Lexer.LiterateHaskell
-                Yi.Lexer.Latex 
+                Yi.Lexer.Latex
                 Yi.Lexer.Srmc
                 Yi.Lexer.Cabal
                 Yi.Lexer.GNUMake
@@ -317,7 +317,7 @@ executable yi
         build-depends: base >=4 && <5
         build-depends: binary == 0.5.*
         build-depends: bytestring >=0.9.1 && <0.9.2
-        build-depends: derive >=2 && <2.1 
+        build-depends: derive >=2 && <2.4 
         build-depends: data-accessor == 0.2.1.*
         build-depends: data-accessor-monads-fd == 0.2.*
         build-depends: data-accessor-template == 0.2.*
@@ -335,13 +335,14 @@ executable yi
         build-depends: rosezipper >= 0.1 && < 0.2
         build-depends: split == 0.1.*
         build-depends: time == 1.1.*
+        build-depends: template-haskell >= 2.4.0.0
         build-depends: transformers==0.1.*
         build-depends: utf8-string >= 0.3.1
         build-depends: uniplate
         build-depends: unix-compat >=0.1 && <0.2
 
         ghc-options:   -Wall -fno-warn-orphans -threaded
-        -- orphans are a performance warning, but 
+        -- orphans are a performance warning, but
         -- we need this in Yi.
         -- ghc-options later on get appended to the original
         ghc-prof-options:   -prof -auto-all
@@ -372,7 +373,7 @@ executable yi
 
         if flag (ghcInterpreter)
           cpp-options: -DGHC_INTERPRETER
-          build-depends: hint > 0.3.1 
+          build-depends: hint > 0.3.1
           -- requires an unreleased version atm.
 
         if flag (scion)
@@ -430,7 +431,7 @@ executable yi
            Yi.Lexer.Haskell
            Yi.Lexer.JavaScript
            Yi.Lexer.LiterateHaskell
-           Yi.Lexer.Latex 
+           Yi.Lexer.Latex
            Yi.Lexer.Srmc
            Yi.Lexer.Cabal
            Yi.Lexer.GNUMake
